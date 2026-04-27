@@ -13,9 +13,9 @@ test('Deve consultar um pedido aprovado', async ({ page }) => {
 
   await page.getByTestId('search-order-id').fill('VLO-1YHZBP') 
 
-  await page.getByTestId('search-order-button').click() 
+  await page.getByRole('button', { name: 'Buscar Pedido' }).click();
 
-  await expect(page.getByTestId('order-result-id')).toContainText('VLO-1YHZBP') 
+  await expect(page.getByTestId('order-result-VLO-1YHZBP')).toContainText('VLO-1YHZBP');
 
-  await expect(page.getByTestId('order-result-status')).toContainText('APROVADO') 
+  await expect(page.getByTestId('order-result-VLO-1YHZBP')).toContainText('APROVADO');
 })  

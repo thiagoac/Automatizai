@@ -20,7 +20,6 @@ export default defineConfig({
     timeout: 5_000,
   },
 
-
   testDir: './playwright/e2e',
   /* Run tests in files in parallel */
   fullyParallel: true,
