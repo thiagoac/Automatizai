@@ -49,11 +49,15 @@ test('Deve consultar um pedido rejeitado', async ({ page }) => {
   // await expect(page.locator('#root')).toContainText('Pedido não encontrado');
   // await expect(page.locator('#root')).toContainText('Verifique o número do pedido e tente novamente');
 
-  const titleNotFound = page.getByRole('heading', { name: 'Pedido não encontrado' })
-  await expect(titleNotFound).toBeVisible()
+  // const titleNotFound = page.getByRole('heading', { name: 'Pedido não encontrado' })
+  // await expect(titleNotFound).toBeVisible()
 
-  const messageNotFound = page.locator('p').filter({ hasText: 'Verifique o número do pedido e tente novamente' })
-  await expect(messageNotFound).toBeVisible()
-  
+  // const messageNotFound = page.locator('p').filter({ hasText: 'Verifique o número do pedido e tente novamente' })
+  // await expect(messageNotFound).toBeVisible()
+  await expect(page.locator('#root')).toMatchAriaSnapshot(`
+    - img
+    - heading "Pedido não encontrado" [level=3]
+    - paragraph: Verifique o número do pedido e tente novamente
+    `);
 
 }) 
