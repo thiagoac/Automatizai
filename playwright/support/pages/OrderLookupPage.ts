@@ -3,10 +3,10 @@ import { Page, expect } from '@playwright/test'
 type OrderStatus = 'APROVADO' | 'REPROVADO' | 'EM_ANALISE'
 
 export class OrderLookupPage {
-    private readonly statusClasses = {
-        APROVADO: ['bg-green-100', 'text-green-700', 'lucide-circle-check-big'],
-        REPROVADO: ['bg-red-100', 'text-red-700', 'lucide-circle-x'],
-        EM_ANALISE: ['bg-amber-100', 'text-amber-700', 'lucide-clock']
+    private static readonly STATUS_CONFIG = {
+      APROVADO:  { bgClass: 'bg-green-100',  textClass: 'text-green-700',  iconClass: 'lucide-circle-check-big' },
+      REPROVADO: { bgClass: 'bg-red-100',    textClass: 'text-red-700',    iconClass: 'lucide-circle-x'         },
+      EM_ANALISE:{ bgClass: 'bg-amber-100',  textClass: 'text-amber-700',  iconClass: 'lucide-clock'            },
     } as const
 
     constructor(private page: Page) { }
@@ -17,11 +17,12 @@ export class OrderLookupPage {
     }
 
     async validateStatusBadge(status: OrderStatus) {
-        const [bgClass, textClass, iconClass] = this.statusClasses[status]
-        const statusBadge = this.page.getByRole('status').filter({ hasText: status })
-
-        await expect(statusBadge).toHaveClass(new RegExp(bgClass))
-        await expect(statusBadge).toHaveClass(new RegExp(textClass))
-        await expect(statusBadge.locator('svg')).toHaveClass(new RegExp(iconClass))
+      const { bgClass, textClass, iconClass } = OrderLookupPage.STATUS_CONFIG[status]
+    
+      const statusBadge = this.page.getByRole('status').filter({ hasText: status })
+    
+      await expect(statusBadge).toHaveClass(new RegExp(bgClass))
+      await expect(statusBadge).toHaveClass(new RegExp(textClass))
+      await expect(statusBadge.locator('svg')).toHaveClass(new RegExp(iconClass))
     }
 }
