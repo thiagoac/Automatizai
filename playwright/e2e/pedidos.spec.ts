@@ -1,9 +1,8 @@
 import { test, expect } from '@playwright/test'
 
-import { gerarCodigoVLO} from '../support/helpers'
+import { generateOrderCode } from '../support/helpers'
 
-import { SearchLookupPage } from '../support/pages/OrderLookupPage'
-
+import { OrderLookupPage } from '../support/pages/OrderLookupPage'
 
 /// AAA - Arrange, Act, Assert
 
@@ -22,9 +21,9 @@ test.describe('Consulta de Pedido', () => {
 
     // Test Data
     const order = {
-      number: 'VLO-1YHZBP',
-      status: 'APROVADO',
-      color: 'Glacier Blue',
+      number: 'VLO-6E2J20',
+      status: 'APROVADO' as const,
+      color: 'Lunar White',
       wheels: 'aero Wheels',
       customer: {
         name: 'Fernando Papito',
@@ -34,8 +33,8 @@ test.describe('Consulta de Pedido', () => {
     }
 
     // Act  
-    const searchLookupPage = new SearchLookupPage(page)
-    await searchLookupPage.searchOrder(order.number)
+    const orderLookupPage = new OrderLookupPage(page)
+    await orderLookupPage.searchOrder(order.number)
 
     // Assert
     await expect(page.getByTestId(`order-result-${order.number}`)).toMatchAriaSnapshot(`
@@ -68,13 +67,8 @@ test.describe('Consulta de Pedido', () => {
       - paragraph: /R\\$ \\d+\\.\\d+,\\d+/
       `);
 
-    const statusBadge = page.getByRole('status').filter({ hasText: order.status })
-
-    await expect(statusBadge).toHaveClass(/bg-green-100/)
-    await expect(statusBadge).toHaveClass(/text-green-700/)
-
-    const statusIcon = statusBadge.locator('svg')
-    await expect(statusIcon).toHaveClass(/lucide-circle-check-big/)
+    // Validação do badge de status encapsulada no Page Object
+    await orderLookupPage.validateStatusBadge(order.status)
 
   })
 
@@ -82,8 +76,8 @@ test.describe('Consulta de Pedido', () => {
 
     // Test Data
     const order = {
-      number: 'VLO-IK5T3V',
-      status: 'REPROVADO',
+      number: 'VLO-0LNFEA',
+      status: 'REPROVADO' as const,
       color: 'Midnight Black',
       wheels: 'sport Wheels',
       customer: {
@@ -94,8 +88,8 @@ test.describe('Consulta de Pedido', () => {
     }
 
     // Act  
-    const searchLookupPage = new SearchLookupPage(page)
-    await searchLookupPage.searchOrder(order.number)
+    const orderLookupPage = new OrderLookupPage(page)
+    await orderLookupPage.searchOrder(order.number)
 
     // Assert
     await expect(page.getByTestId(`order-result-${order.number}`)).toMatchAriaSnapshot(`
@@ -128,21 +122,16 @@ test.describe('Consulta de Pedido', () => {
       - paragraph: /R\\$ \\d+\\.\\d+,\\d+/
       `);
 
-      const statusBadge = page.getByRole('status').filter({ hasText: order.status })
-
-      await expect(statusBadge).toHaveClass(/bg-red-100/)
-      await expect(statusBadge).toHaveClass(/text-red-700/)
-  
-      const statusIcon = statusBadge.locator('svg')
-      await expect(statusIcon).toHaveClass(/lucide-circle-x/)
+    // Validação do badge de status encapsulada no Page Object
+    await orderLookupPage.validateStatusBadge(order.status)
   })
 
   test('deve consultar um pedido em analise', async ({ page }) => {
 
     // Test Data
     const order = {
-      number: 'VLO-TSMY11',
-      status: 'EM_ANALISE',
+      number: 'VLO-412O06',
+      status: 'EM_ANALISE' as const,
       color: 'Lunar White',
       wheels: 'aero Wheels',
       customer: {
@@ -153,10 +142,10 @@ test.describe('Consulta de Pedido', () => {
     }
 
     // Act  
-    const searchLookupPage = new SearchLookupPage(page)
-    await searchLookupPage.searchOrder(order.number)
+    const orderLookupPage = new OrderLookupPage(page)
+    await orderLookupPage.searchOrder(order.number)
 
-
+    // Assert
     await expect(page.getByTestId(`order-result-${order.number}`)).toMatchAriaSnapshot(`
       - img
       - paragraph: Pedido
@@ -187,21 +176,16 @@ test.describe('Consulta de Pedido', () => {
       - paragraph: /R\\$ \\d+\\.\\d+,\\d+/
       `);
 
-      const statusBadge = page.getByRole('status').filter({ hasText: order.status })
-
-      await expect(statusBadge).toHaveClass(/bg-amber-100/)
-      await expect(statusBadge).toHaveClass(/text-amber-700/)
-  
-      const statusIcon = statusBadge.locator('svg')
-      await expect(statusIcon).toHaveClass(/lucide-clock/)
+    // Validação do badge de status encapsulada no Page Object
+    await orderLookupPage.validateStatusBadge(order.status)
   })
 
   test('deve exibir mensagem quando o pedido não é encontrado', async ({ page }) => {
 
-    const order = gerarCodigoVLO()
+    const order = generateOrderCode()
 
-    const searchLookupPage = new SearchLookupPage(page)
-    await searchLookupPage.searchOrder(order)
+    const orderLookupPage = new OrderLookupPage(page)
+    await orderLookupPage.searchOrder(order)
 
 
     await expect(page.locator('#root')).toMatchAriaSnapshot(`
